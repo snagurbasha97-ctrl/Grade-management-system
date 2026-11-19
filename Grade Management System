@@ -1,0 +1,161 @@
+
+students = {}
+
+def calculate_grade(percentage):
+    if percentage >= 90:
+        return "A+"
+    elif percentage >= 80:
+        return "A"
+    elif percentage >= 70:
+        return "B"
+    elif percentage >= 60:
+        return "C"
+    elif percentage >= 50:
+        return "D"
+    else:
+        return "F"
+
+def add_student():
+    sid = input("Enter Student ID: ")
+
+    if sid in students:
+        print("Student ID already exists!")
+        return
+
+    name = input("Enter Student Name: ")
+    subjects = ["Python", "Mathematics", "English"]
+    marks = []
+
+    for subject in subjects:
+        mark = float(input("Enter " + subject + " marks: "))
+        if mark < 0 or mark > 100:
+            print("Marks must be between 0 and 100!")
+            return
+        marks.append(mark)
+
+    total = sum(marks)
+    percentage = total / len(subjects)
+    grade = calculate_grade(percentage)
+
+    students[sid] = {
+        "name": name,
+        "marks": marks,
+        "total": total,
+        "percentage": percentage,
+        "grade": grade
+    }
+
+    print("Student added successfully!")
+
+def view_students():
+    if not students:
+        print("No student records found.")
+        return
+
+    for sid, data in students.items():
+        print("\nStudent ID:", sid)
+        print("Name:", data["name"])
+        print("Marks:", data["marks"])
+        print("Total:", data["total"])
+        print("Percentage:", round(data["percentage"], 2), "%")
+        print("Grade:", data["grade"])
+
+def search_student():
+    sid = input("Enter Student ID to search: ")
+
+    if sid in students:
+        data = students[sid]
+        print("\nName:", data["name"])
+        print("Marks:", data["marks"])
+        print("Percentage:", round(data["percentage"], 2), "%")
+        print("Grade:", data["grade"])
+    else:
+        print("Student not found!")
+
+def update_student():
+    sid = input("Enter Student ID to update: ")
+
+    if sid not in students:
+        print("Student not found!")
+        return
+
+    data = students[sid]
+    print("1. Update Name")
+    print("2. Update Marks")
+
+    choice = input("Enter choice: ")
+
+    if choice == "1":
+        data["name"] = input("Enter new name: ")
+
+    elif choice == "2":
+        subjects = ["Python", "Mathematics", "English"]
+        marks = []
+
+        for subject in subjects:
+            mark = float(input("Enter " + subject + " marks: "))
+            if mark < 0 or mark > 100:
+                print("Invalid marks!")
+                return
+            marks.append(mark)
+
+        total = sum(marks)
+        percentage = total / len(subjects)
+
+        data["marks"] = marks
+        data["total"] = total
+        data["percentage"] = percentage
+        data["grade"] = calculate_grade(percentage)
+
+    else:
+        print("Invalid choice!")
+        return
+
+    print("Student record updated successfully!")
+
+def performance_summary():
+    if not students:
+        print("No records available.")
+        return
+
+    percentages = [
+        data["percentage"] for data in students.values()
+    ]
+
+    print("\n--- Performance Summary ---")
+    print("Total Students:", len(students))
+    print("Average Percentage:", round(sum(percentages) / len(percentages), 2), "%")
+    print("Highest Percentage:", max(percentages), "%")
+    print("Lowest Percentage:", min(percentages), "%")
+
+    passed = sum(1 for p in percentages if p >= 50)
+    print("Passed Students:", passed)
+    print("Failed Students:", len(students) - passed)
+
+# Main Menu
+while True:
+    print("\n===== STUDENT RESULT & GRADE MANAGEMENT SYSTEM =====")
+    print("1. Add Student")
+    print("2. View Students")
+    print("3. Search Student")
+    print("4. Update Student")
+    print("5. Performance Summary")
+    print("6. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        add_student()
+    elif choice == "2":
+        view_students()
+    elif choice == "3":
+        search_student()
+    elif choice == "4":
+        update_student()
+    elif choice == "5":
+        performance_summary()
+    elif choice == "6":
+        print("Thank you for using the system!")
+        break
+    else:
+        print("Invalid choice! Try again.")
